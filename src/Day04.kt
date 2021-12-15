@@ -13,16 +13,11 @@ fun main() {
         }
 
         fun win(): Boolean {
-            // columns
-            for (i in 0..4) {
-                var colSum = 0
-                for (j in 0..4) {
-                    colSum += cells[i + j * 5]
-                }
-                if (colSum == -5) return true
-            }
-            // rows
             return cells.windowed(size = 5, step = 5).any { window -> window.sum() == -5 }
+                    ||
+                    (0..4).any { i ->
+                        cells.drop(i).windowed(size = 1, step = 5) { window -> window.first() }.sum() == -5
+                    }
         }
 
         fun sumUnmarked(): Int {
@@ -43,7 +38,7 @@ fun main() {
 
         val scanner = Scanner(file)
         val drawNumber = scanner.nextLine().split(',').map { it.toInt() }
-        val boards = readBoard(scanner).windowed(size = 25, step = 25) { window -> Board(window.toMutableList())}
+        val boards = readBoard(scanner).windowed(size = 25, step = 25) { window -> Board(window.toMutableList()) }
         return BingoData(drawNumber, boards)
     }
 
@@ -84,7 +79,7 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    val testFile = File("src","Day04_test.txt")
+    val testFile = File("src", "Day04_test.txt")
     check(part1(testFile) == 4512)
     check(part2(testFile) == 1924)
 
